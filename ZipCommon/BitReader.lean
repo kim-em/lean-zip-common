@@ -5,7 +5,7 @@
   This module provides a stateful reader that tracks a byte position
   and a bit offset (0–7) within the current byte.
 -/
-namespace Zip.Native
+namespace ZipCommon
 
 structure BitReader where
   data : ByteArray
@@ -59,4 +59,4 @@ def readBytes (br : BitReader) (n : Nat) : Except String (ByteArray × BitReader
     .ok (br.data.extract br.pos (br.pos + n), { br with pos := br.pos + n })
 
 end BitReader
-end Zip.Native
+end ZipCommon

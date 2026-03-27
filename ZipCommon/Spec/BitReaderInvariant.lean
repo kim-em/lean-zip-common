@@ -16,7 +16,7 @@ Split from the original `BitReaderInvariant.lean` which also contained
 DEFLATE-specific invariants (HuffTree, decodeStored, etc.).
 -/
 
-namespace Zip.Native
+namespace ZipCommon
 
 /-- `readBit` preserves the data field. -/
 theorem readBit_data_eq (br br' : BitReader) (bit : UInt32)
@@ -263,4 +263,4 @@ theorem readBits_pos_le_size (br br' : BitReader) (n : Nat)
     br'.pos ≤ br'.data.size :=
   readBits_go_pos_le_size br br' 0 0 n val h hple
 
-end Zip.Native
+end ZipCommon
