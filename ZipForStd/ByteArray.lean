@@ -60,7 +60,7 @@ theorem push_data_toList (buf : ByteArray) (b : UInt8) :
 
 /-- `ByteArray.push` preserves earlier elements: for `j < buf.size`,
     `(buf.push b)[j]! = buf[j]!`. -/
-theorem push_getElem!_lt (buf : ByteArray) (b : UInt8) (j : Nat)
+theorem getElem!_push_lt (buf : ByteArray) (b : UInt8) (j : Nat)
     (hj : j < buf.size) :
     (buf.push b)[j]! = buf[j]! := by
   have hj' : j < (buf.push b).size := by simp only [ByteArray.size_push]; omega
@@ -69,7 +69,7 @@ theorem push_getElem!_lt (buf : ByteArray) (b : UInt8) (j : Nat)
 
 /-- `ByteArray.push` places the new byte at index `buf.size`:
     `(buf.push b)[buf.size]! = b`. -/
-theorem push_getElem!_eq (buf : ByteArray) (b : UInt8) :
+theorem getElem!_push_eq (buf : ByteArray) (b : UInt8) :
     (buf.push b)[buf.size]! = b := by
   have h : buf.size < (buf.push b).size := by simp only [ByteArray.size_push]; omega
   rw [getElem!_pos (buf.push b) buf.size h]
