@@ -33,13 +33,6 @@ theorem getElem!_set!_self [Inhabited α] (arr : Array α) (i : Nat) (v : α) (h
   simp only [set!_eq_setIfInBounds, getElem!_eq_getD, getD_eq_getD_getElem?,
         getElem?_setIfInBounds_self_of_lt hi, Option.getD_some]
 
-/-- Incrementing `arr[k]!` preserves monotonicity: `arr[idx]! ≤ (arr.set! k (arr[k]! + 1))[idx]!`. -/
-theorem getElem!_le_set!_incr (arr : Array Nat) (k idx : Nat) (hk : k < arr.size) :
-    arr[idx]! ≤ (arr.set! k (arr[k]! + 1))[idx]! := by
-  by_cases heq : k = idx
-  · subst heq; rw [getElem!_set!_self arr _ _ hk]; omega
-  · rw [getElem!_set!_ne arr _ _ _ heq]; omega
-
 /-! ## extract/set decomposition -/
 
 /-- `set!` at index `idx` followed by `extract 0 (idx+1)` gives
