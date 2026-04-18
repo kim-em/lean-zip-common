@@ -16,6 +16,48 @@ Audit baseline:
 - `lean4` GitHub `master` checked at commit `592eb02bb2d2191ddd728165129ae9e52a880daf`
 - audit date: `2026-04-18`
 
+## Resume Update (2026-04-18)
+
+The original `/tmp/lean4-pr-*` worktrees referenced below were no longer present when work resumed.
+Fresh replacement branches were recreated from the current local `lean4` `origin/master`:
+
+- recreated base commit: `334d9bd4f3dabe81738e74d455ffb4139f84c8e5`
+- full checkout used: `/home/kim/lean4`
+- replacement worktrees live under `/home/kim/lean4-zipforstd-worktrees`
+
+Replacement branch status:
+
+- `zipforstd-nat`
+  worktree: `/home/kim/lean4-zipforstd-worktrees/nat`
+  commit: `ad3c8f8c9b`
+  draft PR: `leanprover/lean4#13458`
+- `zipforstd-list`
+  worktree: `/home/kim/lean4-zipforstd-worktrees/list`
+  commit: `d94d930cc3`
+  draft PR: `leanprover/lean4#13460`
+- `zipforstd-array-vector`
+  worktree: `/home/kim/lean4-zipforstd-worktrees/array-vector`
+  commit: `e14c28f7b7`
+  draft PR: `leanprover/lean4#13459`
+- `zipforstd-bytearray`
+  worktree: `/home/kim/lean4-zipforstd-worktrees/bytearray`
+  commit: `75ea5a7b5e`
+  draft PR: `leanprover/lean4#13457`
+
+Validation completed on resume:
+
+- `zipforstd-nat`: full `cmake --preset dev && make -C build/dev -j4 stage1` completed successfully
+- `zipforstd-list`: patched files typechecked with
+  `/home/kim/lean4-zipforstd-worktrees/nat/build/dev/stage0/bin/lean`
+- `zipforstd-array-vector`: patched files typechecked with the same stage0 binary
+- `zipforstd-bytearray`: patched file typechecked with the same stage0 binary
+
+Remaining polish before opening PRs:
+
+- decide whether to do full builds for the non-`Nat` branches as well, or proceed from file-level
+  typechecking first
+- write PR descriptions and push the recreated branches to the fork
+
 ## Implemented Lean4 Branches
 
 These were created as separate worktrees off a local clone of `lean4` `master` under `/tmp`.
@@ -68,7 +110,7 @@ Added to `Array`:
 - `Array.getElem!_set!_self`
 - `Array.getElem!_set!_ne`
 - `Array.toList_set!`
-- `Array.getElem!_le_set!_incr`
+- local `Array.getElem!_le_set!_incr` in `lean-zip` only; not upstreamed
 
 Added to `Vector` for parity:
 
@@ -238,7 +280,7 @@ Lemmas expected to become direct upstream imports:
 - `Array.size_set!`
 - `Array.getElem!_set!_self`
 - `Array.getElem!_set!_ne`
-- `Array.getElem!_le_set!_incr`
+- local `Array.getElem!_le_set!_incr` in `lean-zip` only; not upstreamed
 - `Array.getElem?_eq_some_getElem!`
 - all upstreamed `ByteArray` push / `set!` lemmas
 - `Nat.or_two_pow_eq_add`
