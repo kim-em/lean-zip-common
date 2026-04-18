@@ -58,7 +58,7 @@ theorem foldl_set_length (positions : List Nat) (f : Nat → α) (init : List α
   | cons p ps ih => simp only [foldl_cons, ih, List.length_set]
 
 /-- At a position not in the fold list, the value is unchanged from init. -/
-theorem foldl_set_getElem_not_mem (positions : List Nat) (f : Nat → α)
+theorem getElem_foldl_set_not_mem (positions : List Nat) (f : Nat → α)
     (init : List α) (p : Nat) (hp : p ∉ positions) (hlt : p < init.length) :
     (positions.foldl (fun a pos => a.set pos (f pos)) init)[p]'(by
       rw [foldl_set_length]; exact hlt) = init[p] := by
@@ -72,7 +72,7 @@ theorem foldl_set_getElem_not_mem (positions : List Nat) (f : Nat → α)
     exact List.getElem_set_ne (Ne.symm hp.1) _
 
 /-- At a position in the fold list (with nodup), the value is `f p`. -/
-theorem foldl_set_getElem_mem (positions : List Nat) (f : Nat → α)
+theorem getElem_foldl_set_mem (positions : List Nat) (f : Nat → α)
     (init : List α) (p : Nat) (hp : p ∈ positions) (hnodup : positions.Nodup)
     (hlt : p < init.length) (hbounds : ∀ q ∈ positions, q < init.length) :
     (positions.foldl (fun a pos => a.set pos (f pos)) init)[p]'(by
@@ -89,7 +89,7 @@ theorem foldl_set_getElem_mem (positions : List Nat) (f : Nat → α)
     cases hp with
     | inl heq =>
       subst heq
-      rw [foldl_set_getElem_not_mem qs f _ p hnodup.1 hlt']
+      rw [getElem_foldl_set_not_mem qs f _ p hnodup.1 hlt']
       exact List.getElem_set_self _
     | inr hmem =>
       exact ih (init.set q (f q)) hmem hnodup.2 hlt' hbounds'
@@ -150,7 +150,7 @@ theorem flatMap_drop_mul (l : List α) (f : α → List β)
       exact ih rest
 
 /-- Dropping past a prefix of known length. -/
-theorem drop_append_left' {l₁ l₂ : List α} {k : Nat}
+private theorem drop_append_left {l₁ l₂ : List α} {k : Nat}
     (h : l₁.length = k) (n : Nat) :
     (l₁ ++ l₂).drop (k + n) = l₂.drop n := by
   rw [← drop_drop, drop_left' h]
@@ -171,10 +171,10 @@ theorem flatMap_uniform_drop {f : α → List β} (hf : ∀ a, (f a).length = k)
     | succ j =>
       simp only [flatMap_cons, getElem_cons_succ]
       rw [show (j + 1) * k = k + j * k from by rw [Nat.succ_mul, Nat.add_comm],
-          drop_append_left' (hf b),
+          drop_append_left (hf b),
           show (j + 2) * k = k + (j + 1) * k from by rw [show j + 2 = (j + 1) + 1 from rfl,
             Nat.succ_mul, Nat.add_comm],
-          drop_append_left' (hf b)]
+          drop_append_left (hf b)]
       exact ih j (by simpa using hi)
 
 /-- If `l.drop n = a :: rest`, then `rest = l.drop (n + 1)`. -/
