@@ -7,13 +7,15 @@ Generic lemmas about `ByteArray` indexing that bridge between
 `ByteArray` get-element, `Array` get-element, and `List` get-element.
 Candidates for upstreaming to Lean's standard library.
 
-## Upstream status (Lean 4.29)
+## Upstream status (Lean 4.33)
 
-Upstream provides `ByteArray.data_push`, `ByteArray.extract_append`,
-`ByteArray.size_push`, and `getElem`-based Array lemmas. This file provides
-`getElem!`-based convenience wrappers and specialized extract lemmas
-(`extract_append_ge`, `extract_append_left`) that are not in upstream.
-No `ByteArray.set!`/`getElem!` lemmas exist upstream.
+Core now has the `push`/`set!` lemmas in the `getElem!` and proven-bounds forms
+this file used to provide (`getElem!_push_lt`, `getElem!_push_eq`, `size_set!`,
+`getElem!_set!_self`, `getElem!_set!_ne`, `getElem_set!_ne`,
+`getElem_set!_self`), each with the same signature as the copy that lived here,
+so call sites resolve to core's. What remains has no upstream equivalent: the
+`Array.toList` bridging lemmas and the specialized extracts
+(`extract_append_ge`, `extract_append_left`).
 -/
 
 namespace ByteArray
@@ -57,66 +59,5 @@ theorem extract_append_left (a b : ByteArray) :
 theorem push_data_toList (buf : ByteArray) (b : UInt8) :
     (buf.push b).data.toList = buf.data.toList ++ [b] := by
   simp only [ByteArray.data_push, Array.toList_push]
-
-/-- `ByteArray.push` preserves earlier elements: for `j < buf.size`,
-    `(buf.push b)[j]! = buf[j]!`. -/
-theorem getElem!_push_lt (buf : ByteArray) (b : UInt8) (j : Nat)
-    (hj : j < buf.size) :
-    (buf.push b)[j]! = buf[j]! := by
-  have hj' : j < (buf.push b).size := by simp only [ByteArray.size_push]; omega
-  rw [getElem!_pos (buf.push b) j hj', getElem!_pos buf j hj]
-  exact Array.getElem_push_lt hj
-
-/-- `ByteArray.push` places the new byte at index `buf.size`:
-    `(buf.push b)[buf.size]! = b`. -/
-theorem getElem!_push_eq (buf : ByteArray) (b : UInt8) :
-    (buf.push b)[buf.size]! = b := by
-  have h : buf.size < (buf.push b).size := by simp only [ByteArray.size_push]; omega
-  rw [getElem!_pos (buf.push b) buf.size h]
-  exact Array.getElem_push_eq
-
-/-! ## `set!` interaction lemmas -/
-
-/-- ByteArray.getElem! is the same as Array.getElem! on the underlying data. -/
-private theorem getElem!_eq_data_getElem! (ba : ByteArray) (i : Nat) :
-    ba[i]! = ba.data[i]! := by
-  by_cases h : i < ba.size
-  · rw [getElem!_pos ba i h, getElem!_pos ba.data i h]
-    rfl
-  · rw [getElem!_neg ba i h, getElem!_neg ba.data i h]
-
-/-- `ByteArray.set!` preserves size. -/
-theorem size_set! (data : ByteArray) (i : Nat) (v : UInt8) :
-    (data.set! i v).size = data.size := by
-  show (data.data.setIfInBounds i v).size = data.data.size
-  exact Array.size_setIfInBounds ..
-
-/-- Setting a byte and reading at the same index returns the written value. -/
-theorem getElem!_set!_self (data : ByteArray) (i : Nat) (v : UInt8) (h : i < data.size) :
-    (data.set! i v)[i]! = v := by
-  rw [getElem!_eq_data_getElem!]
-  show (data.data.set! i v)[i]! = v
-  exact Array.getElem!_set!_self data.data i v h
-
-/-- Setting a byte at index `i` doesn't affect reads at a different index `j`. -/
-theorem getElem!_set!_ne (data : ByteArray) (i j : Nat) (v : UInt8) (hij : i ≠ j) :
-    (data.set! i v)[j]! = data[j]! := by
-  rw [getElem!_eq_data_getElem!, getElem!_eq_data_getElem!]
-  show (data.data.set! i v)[j]! = data.data[j]!
-  exact Array.getElem!_set!_ne data.data i j v hij
-
-/-- Proven-bounds variant: setting byte at `i` doesn't affect reads at different index `j`. -/
-theorem getElem_set!_ne (data : ByteArray) (i j : Nat) (v : UInt8) (hij : i ≠ j)
-    (hj : j < data.size) :
-    (data.set! i v)[j]'(by rw [size_set!]; exact hj) = data[j] := by
-  rw [← getElem!_pos (data.set! i v) j (by rw [size_set!]; exact hj),
-      ← getElem!_pos data j hj,
-      getElem!_set!_ne _ _ _ _ hij]
-
-/-- Proven-bounds variant: setting byte at `i` and reading at `i` returns the written value. -/
-theorem getElem_set!_self (data : ByteArray) (i : Nat) (v : UInt8) (h : i < data.size) :
-    (data.set! i v)[i]'(by rw [size_set!]; exact h) = v := by
-  rw [← getElem!_pos (data.set! i v) i (by rw [size_set!]; exact h),
-      getElem!_set!_self _ _ _ h]
 
 end ByteArray

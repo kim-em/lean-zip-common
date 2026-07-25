@@ -55,7 +55,6 @@ theorem readUInt32LE_unfold (data : ByteArray) (offset : Nat) (h : offset + 4 â‰
   simp only [readUInt32LE, dif_pos h, getElem!_pos data offset h0,
     getElem!_pos data (offset + 1) h1, getElem!_pos data (offset + 2) h2,
     getElem!_pos data (offset + 3) h3]
-  rfl
 
 /-! ## UInt16 roundtrip -/
 
