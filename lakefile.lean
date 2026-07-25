@@ -4,9 +4,14 @@ open System Lake DSL
 package «lean-zip-common» where
   testDriver := "test"
 
+-- Both libraries are default targets, so a bare `lake build` (what CI runs)
+-- actually builds them. Without this Lake has nothing to do and reports
+-- "Build completed successfully (0 jobs)".
+@[default_target]
 lean_lib ZipForStd where
   globs := #[.submodules `ZipForStd]
 
+@[default_target]
 lean_lib ZipCommon where
   globs := #[.submodules `ZipCommon]
 

@@ -6,32 +6,16 @@ import ZipForStd.List
 Generic lemmas about `Array.set!` and `getElem!` that are useful beyond the
 Huffman module. Candidates for upstreaming to Lean's standard library.
 
-## Upstream status (Lean 4.29)
+## Upstream status (Lean 4.33)
 
-Upstream provides `getElem`-based variants (`Array.size_setIfInBounds`,
-`Array.getElem_setIfInBounds_ne`, `Array.getElem_setIfInBounds_self`) but not
-the `getElem!`/`set!` convenience wrappers that this file provides. All lemmas
-here are still needed.
+Core now has the `getElem!`/`set!` convenience wrappers this file used to
+provide: `Array.size_set!`, `Array.getElem!_set!_ne`,
+`Array.getElem!_set!_self`, and `Array.getElem?_eq_some_getElem!`, each with the
+same signature as the copy that lived here, so call sites resolve to core's. The
+`extract`/`set` decomposition lemmas below have no upstream equivalent.
 -/
 
 namespace Array
-
-/-- `Array.set!` preserves the size. -/
-theorem size_set! (arr : Array α) (i : Nat) (v : α) :
-    (arr.set! i v).size = arr.size := by
-  simp only [set!_eq_setIfInBounds, size_setIfInBounds]
-
-/-- `Array.set!` at a different index preserves the element. -/
-theorem getElem!_set!_ne [Inhabited α] (arr : Array α) (i j : Nat) (v : α) (hij : i ≠ j) :
-    (arr.set! i v)[j]! = arr[j]! := by
-  simp only [set!_eq_setIfInBounds, getElem!_eq_getD, getD_eq_getD_getElem?,
-        getElem?_setIfInBounds_ne hij]
-
-/-- `Array.set!` at the same index replaces the value. -/
-theorem getElem!_set!_self [Inhabited α] (arr : Array α) (i : Nat) (v : α) (hi : i < arr.size) :
-    (arr.set! i v)[i]! = v := by
-  simp only [set!_eq_setIfInBounds, getElem!_eq_getD, getD_eq_getD_getElem?,
-        getElem?_setIfInBounds_self_of_lt hi, Option.getD_some]
 
 /-! ## extract/set decomposition -/
 
@@ -59,11 +43,5 @@ theorem extract_map_getLast_eq (arr : Array UInt8) (idx : Nat)
   rw [getElem!_pos arr _ (by omega),
     @List.getElem_take _ (arr.toList.map UInt8.toNat) idx (idx - 1) (by rw [hlen]; omega)]
   simp only [List.getElem_map, getElem_toList]
-
-/-- `arr[i]? = some arr[i]!` when `i` is in bounds.
-    Combines `getElem!_pos` and `getElem?_pos` into a single step. -/
-theorem getElem?_eq_some_getElem! [Inhabited α] (arr : Array α) (i : Nat)
-    (h : i < arr.size) : arr[i]? = some arr[i]! := by
-  rw [getElem!_pos arr i h]; exact getElem?_pos arr i h
 
 end Array
