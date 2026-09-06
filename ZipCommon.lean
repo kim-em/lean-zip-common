@@ -1,5 +1,7 @@
-import ZipCommon.Binary
-import ZipCommon.BitReader
-import ZipCommon.Handle
-import ZipCommon.Spec.BinaryCorrect
-import ZipCommon.Spec.BitReaderInvariant
+module
+
+public import ZipCommon.Binary
+public import ZipCommon.BitReader
+public import ZipCommon.Handle
+public import ZipCommon.Spec.BinaryCorrect
+public import ZipCommon.Spec.BitReaderInvariant

@@ -1,3 +1,7 @@
+module
+
+@[expose] public section
+
 /-! Shims for missing Lean 4 stdlib file handle operations (seek, fileSize, symlink creation).
     Remove when upstream leanprover/lean4#11442 lands. -/
 namespace Handle

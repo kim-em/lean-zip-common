@@ -1,4 +1,8 @@
-import ZipCommon.BitReader
+module
+
+public import ZipCommon.BitReader
+
+@[expose] public section
 
 /-!
 # BitReader invariant preservation (generic)
