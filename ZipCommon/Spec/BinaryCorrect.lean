@@ -1,6 +1,11 @@
-import ZipCommon.Binary
-import ZipForStd.ByteArray
+module
+
+public import ZipCommon.Binary
+public import ZipForStd.ByteArray
 import Std.Tactic.BVDecide
+public meta import Std.Tactic.BVDecide.Reflect
+
+public section
 
 /-!
 # Binary LE read/write roundtrip proofs

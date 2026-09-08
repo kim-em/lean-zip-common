@@ -1,3 +1,7 @@
+module
+
+@[expose] public section
+
 /-! Little-endian and octal ASCII binary encoding/decoding for ZIP and tar archives,
     with in-place ByteArray writes and path safety validation. -/
 namespace Binary

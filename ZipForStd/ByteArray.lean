@@ -1,4 +1,8 @@
-import ZipForStd.Array
+module
+
+public import ZipForStd.Array
+
+public section
 
 /-!
 # ByteArray lemmas for the standard library

@@ -2,18 +2,22 @@ import Lake
 open System Lake DSL
 
 package «lean-zip-common» where
-  testDriver := "test"
+  requiresModuleSystem := true
+  testDriver := "ModuleTests"
 
 -- Both libraries are default targets, so a bare `lake build` (what CI runs)
 -- actually builds them. Without this Lake has nothing to do and reports
 -- "Build completed successfully (0 jobs)".
 @[default_target]
 lean_lib ZipForStd where
-  globs := #[.submodules `ZipForStd]
+  globs := #[.andSubmodules `ZipForStd]
 
 @[default_target]
 lean_lib ZipCommon where
-  globs := #[.submodules `ZipCommon]
+  globs := #[.andSubmodules `ZipCommon]
+
+lean_lib ModuleTests where
+  globs := #[.submodules `ModuleTests]
 
 -- IO FFI (Handle seek/fileSize shims — no external library deps)
 input_file io_ffi.c where

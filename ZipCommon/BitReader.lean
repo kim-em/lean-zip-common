@@ -1,3 +1,7 @@
+module
+
+@[expose] public section
+
 /-!
   Bit-level reader for DEFLATE streams.
 
