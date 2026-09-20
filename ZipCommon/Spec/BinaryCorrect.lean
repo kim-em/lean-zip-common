@@ -38,7 +38,7 @@ private theorem ba4_getElem!_3 (a b c d : UInt8) :
 theorem readUInt16LE_unfold (data : ByteArray) (offset : Nat) (h : offset + 2 ≤ data.size) :
     readUInt16LE data offset =
     data[offset]!.toUInt16 ||| (data[offset + 1]!.toUInt16 <<< 8) := by
-  simp [readUInt16LE, dif_pos h]
+  simp [readUInt16LE, dite_eq_left h]
   congr 1
   · congr 1; exact (getElem!_pos data offset (by omega)).symm
   · congr 1; congr 1; exact (getElem!_pos data (offset + 1) (by omega)).symm
@@ -52,7 +52,7 @@ theorem readUInt32LE_unfold (data : ByteArray) (offset : Nat) (h : offset + 4 �
   have h1 : offset + 1 < data.size := by omega
   have h2 : offset + 2 < data.size := by omega
   have h3 : offset + 3 < data.size := by omega
-  simp only [readUInt32LE, dif_pos h, getElem!_pos data offset h0,
+  simp only [readUInt32LE, dite_eq_left h, getElem!_pos data offset h0,
     getElem!_pos data (offset + 1) h1, getElem!_pos data (offset + 2) h2,
     getElem!_pos data (offset + 3) h3]
 
