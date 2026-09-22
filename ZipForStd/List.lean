@@ -1,3 +1,7 @@
+module
+
+@[expose] public section
+
 /-!
 # List lemmas for the standard library
 

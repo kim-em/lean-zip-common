@@ -1,3 +1,7 @@
+module
+
+@[expose] public section
+
 /-!
 # Missing Nat lemmas for standard library
 

@@ -1,4 +1,8 @@
-import ZipForStd.List
+module
+
+public import ZipForStd.List
+
+@[expose] public section
 
 /-!
 # Array lemmas for the standard library
