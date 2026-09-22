@@ -7,13 +7,20 @@ package «lean-zip-common» where
 -- Both libraries are default targets, so a bare `lake build` (what CI runs)
 -- actually builds them. Without this Lake has nothing to do and reports
 -- "Build completed successfully (0 jobs)".
+--
+-- `.andSubmodules`, not `.submodules`: the latter excludes the root module
+-- itself, so `ZipForStd.lean`/`ZipCommon.lean` were left out of the library.
+-- A shared library built from such a lib has no `initialize_<lib>` symbol, and
+-- a dependent package with `precompileModules := true` then fails to load it
+-- ("error loading plugin, initializer not found
+-- 'initialize_lean_x2dzip_x2dcommon_ZipForStd'").
 @[default_target]
 lean_lib ZipForStd where
-  globs := #[.submodules `ZipForStd]
+  globs := #[.andSubmodules `ZipForStd]
 
 @[default_target]
 lean_lib ZipCommon where
-  globs := #[.submodules `ZipCommon]
+  globs := #[.andSubmodules `ZipCommon]
 
 -- IO FFI (Handle seek/fileSize shims — no external library deps)
 input_file io_ffi.c where
