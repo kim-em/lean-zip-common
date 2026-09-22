@@ -22,7 +22,7 @@ jobs:
         uses: actions/cache@v4
         with:
           path: .lake
-          key: lake-${{ hashFiles('lean-toolchain', 'lakefile.lean', 'ZipCommon/**', 'ZipForStd/**', 'c/**') }}
+          key: lake-${{ hashFiles('lean-toolchain', 'lakefile.lean', 'ZipCommon.lean', 'ZipForStd.lean', 'ZipCommon/**', 'ZipForStd/**', 'ModuleTests/**', 'c/**') }}
           restore-keys: lake-
 
       - name: Clean stale Lake cache on fallback restore
@@ -31,3 +31,6 @@ jobs:
 
       - name: Build
         run: lake build
+
+      - name: Check module API
+        run: lake test
